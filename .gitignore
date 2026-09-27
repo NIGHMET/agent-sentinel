@@ -1,0 +1,19 @@
+# 依赖与构建产物
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# 运行期产物：哨兵日志与临时探针
+*.log
+sentinel.log
+.sentinel/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 渲染演示图时的临时浏览器 profile
+.chrome-profile/

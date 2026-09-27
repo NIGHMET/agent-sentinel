@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1280px; height:540px; }
+  body { font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+         background:#fff; color:#1f2328; padding:38px 48px; }
+  h2 { font-size:26px; font-weight:700; }
+  .note { margin-top:8px; font-size:15.5px; color:#59636e; }
+  .note b { color:#cf222e; }
+  table { margin-top:26px; width:100%; border-collapse:collapse; }
+  th { text-align:left; font-size:13.5px; color:#59636e; font-weight:600;
+       padding:0 0 10px; border-bottom:1px solid #d0d7de; }
+  td { padding:16px 0; border-bottom:1px solid #eaeef2; vertical-align:middle; }
+  .lbl { width:270px; }
+  .lbl b { font-size:18px; display:block; }
+  .lbl span { font-size:14px; color:#59636e; }
+  .bar { width:330px; }
+  .track { height:22px; background:#f6f8fa; border-radius:6px; position:relative; }
+  .fill { position:absolute; left:0; top:0; height:22px; border-radius:6px; }
+  .a .fill { width:26px;  background:#0969da; }
+  .b .fill { width:46px;  background:#1a7f37; }
+  .c .fill { width:330px; background:#bf8700; }
+  .ms { font-family:Consolas,monospace; font-size:15px; width:170px; }
+  .a .ms { color:#0969da; } .b .ms { color:#1a7f37; } .c .ms { color:#bf8700; }
+  .yes { color:#1a7f37; font-weight:700; font-size:15px; }
+  .no  { color:#cf222e; font-weight:700; font-size:15px; }
+  .foot { margin-top:24px; background:#f6f8fa; border-left:4px solid #0969da;
+          border-radius:6px; padding:16px 20px; font-size:15.5px; color:#1f2328; line-height:1.6; }
+  .foot .x { color:#cf222e; font-weight:700; }
+  .foot .v { color:#1a7f37; font-weight:700; }
+</style>
+</head>
+<body>
+  <h2>三层延迟：别把「捕获」当成「接手」</h2>
+  <div class="note">把能力边界分层说清楚，否则对外承诺就是假的。哨兵只负责<b>捕获</b>，唤醒是另一回事。</div>
+
+  <table>
+    <tr><th>层 / 谁驱动</th><th>延迟</th><th>量级</th><th>能主动接手吗</th></tr>
+    <tr class="a">
+      <td class="lbl"><b>A · 哨兵轮询</b><span>watch.mjs，一个后台进程</span></td>
+      <td class="ms">30 秒（可设 1 秒）</td>
+      <td class="bar"><div class="track"><div class="fill"></div></div></td>
+      <td class="no">✕ 只写日志，等被唤醒</td>
+    </tr>
+    <tr class="b">
+      <td class="lbl"><b>B · 退出信号</b><span>--exit-on-change，进程退出即通知</span></td>
+      <td class="ms">≈ 1 个轮询间隔</td>
+      <td class="bar"><div class="track"><div class="fill"></div></div></td>
+      <td class="yes">✓ 最接近实时（需重挂）</td>
+    </tr>
+    <tr class="c">
+      <td class="lbl"><b>C · 平台定时任务</b><span>调度器，唯一跨会话存活的一层</span></td>
+      <td class="ms">最长 1 小时</td>
+      <td class="bar"><div class="track"><div class="fill"></div></div></td>
+      <td class="yes">✓ 真正无人值守</td>
+    </tr>
+  </table>
+
+  <div class="foot">
+    可以承诺：<span class="v">30 秒内记录差异 + 会话内 ≈1 分钟唤醒 + 最长 1 小时内自动接手</span>
+    　·　不能承诺：<span class="x">「30 秒自动接手」</span>——A 层不负责唤醒。
+  </div>
+</body>
+</html>

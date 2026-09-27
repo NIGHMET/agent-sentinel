@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1280px; height:560px; }
+  body { font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+         background:#ffffff; color:#1f2328; padding:40px 48px; }
+  h2 { font-size:26px; font-weight:700; }
+  .note { margin-top:6px; color:#59636e; font-size:15px; }
+  .flow { margin-top:34px; display:flex; align-items:stretch; gap:0; }
+  .step { flex:1; border:1.5px solid #d0d7de; border-radius:12px; padding:20px 18px; background:#f6f8fa; }
+  .step .n { display:inline-block; width:28px; height:28px; border-radius:50%;
+             background:#0969da; color:#fff; font-size:15px; font-weight:700;
+             text-align:center; line-height:28px; }
+  .step h3 { font-size:19px; margin-top:12px; }
+  .step p { font-size:14.5px; color:#59636e; margin-top:8px; line-height:1.55; }
+  .step .tool { margin-top:14px; font-family:Consolas,monospace; font-size:13.5px;
+                color:#1a7f37; background:#dafbe1; border:1px solid #aceebb;
+                border-radius:6px; padding:4px 10px; display:inline-block; }
+  .arrow { width:52px; display:flex; align-items:center; justify-content:center;
+           color:#8c959f; font-size:26px; flex:none; }
+  .row { margin-top:30px; display:flex; gap:16px; }
+  .card { flex:1; border:1.5px solid #d0d7de; border-radius:12px; padding:18px 20px; }
+  .card h4 { font-size:16px; color:#1f2328; }
+  .card ul { margin:10px 0 0 18px; font-size:14.5px; color:#59636e; line-height:1.7; }
+  .card .k { font-family:Consolas,monospace; color:#cf222e; }
+  .tag { font-size:13px; color:#59636e; }
+  .warn { border-color:#f0b429; background:#fff8c5; }
+</style>
+</head>
+<body>
+  <h2>协作闭环：四个动作，两个脚本各管一半</h2>
+  <div class="note">两个代理没有 IPC，唯一的共享面是文件系统。卡点从来不是"会不会干"，而是<b>"什么时候知道对方写了东西"</b>。</div>
+
+  <div class="flow">
+    <div class="step">
+      <span class="n">1</span>
+      <h3>派单落盘</h3>
+      <p>派单方把 <span style="font-family:Consolas,monospace">task-001-dispatch-*.md</span> 写进共享交接目录。</p>
+      <div class="tool">watch.mjs → 捕获到 [NEW]</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <span class="n">2</span>
+      <h3>承接方认领</h3>
+      <p>承接方（人或代理）读到待领清单，开始干活。</p>
+      <div class="tool">patrol.mjs → 报"待领"</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <span class="n">3</span>
+      <h3>回执落盘</h3>
+      <p>承接方写回 <span style="font-family:Consolas,monospace">task-001-receipt.md</span>，逐项带证据与哈希。</p>
+      <div class="tool">watch.mjs → 退出即唤醒</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <span class="n">4</span>
+      <h3>派单方验收</h3>
+      <p>被唤醒后读回执、复算哈希、出结论、派下一单。</p>
+      <div class="tool">patrol.mjs → 待领归零</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h4>两个脚本，各答一个问题</h4>
+      <ul>
+        <li><span class="k">patrol.mjs</span> — 现在有没有该我干的活？</li>
+        <li><span class="k">watch.mjs</span> — 活什么时候落盘的？</li>
+        <li><span class="k">docs/protocol.md</span> — 派单/回执写什么字段</li>
+      </ul>
+    </div>
+    <div class="card warn">
+      <h4>别把「捕获」当「接手」</h4>
+      <ul>
+        <li>哨兵只负责<b>捕获</b>差异并落日志（30 秒级）</li>
+        <li>真正叫醒代理要靠<b>进程退出信号</b>或平台定时任务</li>
+        <li>对外只能承诺：30 秒内记录 + 会话内≈1 分钟唤醒</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

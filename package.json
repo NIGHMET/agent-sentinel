@@ -1,0 +1,42 @@
+{
+  "name": "agent-sentinel",
+  "version": "1.0.0",
+  "description": "零依赖目录哨兵 + 任务巡查：让多个 AI 代理在只有文件系统的环境下完成「派单 → 认领 → 回执 → 验收」闭环。Zero-dependency filesystem sentinel and task patrol for multi-agent collaboration.",
+  "author": "NIGHMET",
+  "type": "module",
+  "bin": {
+    "agent-sentinel": "scripts/watch.mjs",
+    "agent-patrol": "scripts/patrol.mjs"
+  },
+  "scripts": {
+    "test": "node test/smoke.mjs",
+    "patrol": "node scripts/patrol.mjs",
+    "watch": "node scripts/watch.mjs"
+  },
+  "files": [
+    "scripts",
+    "test",
+    "docs",
+    "examples",
+    "SKILL.md",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "agent",
+    "multi-agent",
+    "ai-agent",
+    "orchestration",
+    "handoff",
+    "file-watcher",
+    "polling",
+    "sentinel",
+    "zero-dependency",
+    "automation"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

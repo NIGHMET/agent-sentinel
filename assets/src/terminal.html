@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1280px; height:1005px; }
+  body { font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+         background:#0d1117; padding:34px 40px 40px; }
+  .head { color:#e6edf3; font-size:22px; font-weight:600; margin-bottom:6px; }
+  .head span { color:#7d8590; font-weight:400; font-size:16px; }
+  .card { background:#161b22; border:1px solid #30363d; border-radius:12px;
+          margin-top:18px; overflow:hidden; }
+  .bar { height:34px; background:#21262d; display:flex; align-items:center; padding:0 14px; gap:8px; }
+  .dot { width:11px; height:11px; border-radius:50%; }
+  .r{background:#ff5f57;} .y{background:#febc2e;} .g{background:#28c840;}
+  .title { margin-left:10px; color:#8b949e; font-size:14px; font-family:Consolas,monospace; }
+  pre { font-family:Consolas,"Cascadia Mono",monospace; font-size:15.5px;
+        line-height:1.62; color:#c9d1d9; padding:16px 20px 18px; white-space:pre; }
+  .p { color:#3fb950; } .c { color:#e6edf3; }
+  .ok { color:#3fb950; } .new { color:#2f81f7; } .ts { color:#7d8590; }
+  .hd { color:#d29922; font-weight:600; } .res { color:#3fb950; font-weight:700; }
+  .dim { color:#6e7681; }
+</style>
+</head>
+<body>
+  <div class="head">真跑一遍的输出 <span>／ 以下命令与输出均来自本机实际执行（路径已脱敏）</span></div>
+
+  <div class="card">
+    <div class="bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="title">① 有没有该我干的活 — patrol.mjs</div></div>
+<pre><span class="p">$</span> <span class="c">node scripts/patrol.mjs --dir ./examples/handoff</span>
+
+== ./examples/handoff
+   派单 2 件 / 已有回执 1 件 / 待领 <span class="new">1 件</span>
+   <span class="new">[待领]</span> task-001-dispatch-demo.md  -&gt;  期望回执 task-001-receipt.md  (814 B)
+
+合计待领：1 件</pre>
+  </div>
+
+  <div class="card">
+    <div class="bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="title">② 挂上哨兵，它一落盘我就知道 — watch.mjs</div></div>
+<pre><span class="p">$</span> <span class="c">node scripts/watch.mjs --dir ./handoff --interval 30 --exit-on-change --out ./sentinel.log</span>
+[<span class="ts">2026-09-27 12:06:20+08:00</span>] SENTINEL_START pid=16260 interval=30s hours=12 dirs=1
+[<span class="ts">2026-09-27 12:06:20+08:00</span>] BASELINE files=0
+
+<span class="hd">## CHANGE 2026-09-27 12:06:24+08:00 tick=2 diff=1</span>
+- <span class="new">[NEW]</span>     /abs/path/handoff&gt;task-001-receipt.md  (9|1790481982616)
+
+<span class="hd">## SENTINEL_TRIGGERED 2026-09-27 12:06:24+08:00</span> — 捕获差异后主动退出，请以此进程结束为唤醒信号</pre>
+  </div>
+
+  <div class="card">
+    <div class="bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="title">③ 证明它真能用 — test/smoke.mjs</div></div>
+<pre><span class="p">$</span> <span class="c">node test/smoke.mjs</span>
+  <span class="ok">PASS</span>  watch.mjs --help
+  <span class="ok">PASS</span>  --exit-on-change 在捕获差异后自动退出（退出码 0）
+  <span class="ok">PASS</span>  变更日志记录到 [NEW]
+  <span class="ok">PASS</span>  日志文件自身无自噪声
+  <span class="ok">PASS</span>  时间戳带时区偏移
+  <span class="ok">PASS</span>  patrol.mjs 识别出 1 件待领任务（task-001）
+  <span class="ok">PASS</span>  --fail-if-found 发现待领任务时退出码 10
+  <span class="dim">…（共 13 项）</span>
+
+<span class="res">结果：13 通过 / 0 失败</span></pre>
+  </div>
+</body>
+</html>

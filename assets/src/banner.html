@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1280px; height:380px; }
+  body {
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:#0d1117; color:#e6edf3; overflow:hidden;
+    display:flex; align-items:center; padding:0 64px;
+  }
+  .accent { position:absolute; left:0; top:0; width:10px; height:380px;
+            background:linear-gradient(180deg,#2f81f7,#3fb950 60%,#d29922); }
+  .wrap { padding-left:22px; }
+  h1 { font-size:66px; letter-spacing:-1.2px; font-weight:700; }
+  h1 .dim { color:#7d8590; font-weight:400; }
+  .sub { margin-top:14px; font-size:25px; color:#c9d1d9; }
+  .sub b { color:#3fb950; font-weight:600; }
+  .meta { margin-top:26px; display:flex; gap:12px; }
+  .chip { border:1px solid #30363d; background:#161b22; border-radius:999px;
+          padding:8px 18px; font-size:16px; color:#8b949e; }
+  .chip b { color:#2f81f7; font-weight:600; }
+  .cmd { margin-top:26px; font-family:Consolas,"Cascadia Mono",monospace; font-size:19px; color:#8b949e; }
+  .cmd .p { color:#3fb950; }
+</style>
+</head>
+<body>
+  <div class="accent"></div>
+  <div class="wrap">
+    <h1>agent-sentinel <span class="dim">· 目录哨兵</span></h1>
+    <div class="sub">多个 AI 代理只靠文件系统协作时，把 <b>派单 → 认领 → 回执 → 验收</b> 这条链路自动跑起来</div>
+    <div class="cmd"><span class="p">$</span> node scripts/patrol.mjs --dir ./handoff</div>
+    <div class="meta">
+      <div class="chip"><b>node</b> ≥ 18</div>
+      <div class="chip"><b>0</b> 依赖</div>
+      <div class="chip"><b>MIT</b> License</div>
+      <div class="chip">轮询捕获 · 退出即唤醒 · 任务巡查</div>
+    </div>
+  </div>
+</body>
+</html>
